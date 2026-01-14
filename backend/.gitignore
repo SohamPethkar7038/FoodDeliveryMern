@@ -1,0 +1,102 @@
+##################################
+# ENVIRONMENT VARIABLES
+##################################
+.env
+.env.*
+!.env.example
+
+##################################
+# NODE / JAVASCRIPT (Frontend & Backend)
+##################################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.vite/
+.cache/
+
+##################################
+# FRONTEND SPECIFIC
+##################################
+# React / Vite
+.eslintcache
+coverage/
+
+# Angular
+.angular/
+
+##################################
+# BACKEND SPECIFIC
+##################################
+# Logs
+logs/
+*.log
+
+# Database files
+*.sqlite
+*.db
+*.db-journal
+
+##################################
+# JAVA (if backend uses Java / Spring)
+##################################
+*.class
+*.jar
+*.war
+*.ear
+target/
+.gradle/
+build/
+
+##################################
+# PYTHON (if backend uses Python)
+##################################
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+env/
+.venv/
+
+##################################
+# IDE / EDITOR
+##################################
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+##################################
+# OS FILES
+##################################
+.DS_Store
+Thumbs.db
+desktop.ini
+
+##################################
+# TEMP / MISC
+##################################
+*.tmp
+*.swp
+*.bak
+*.old
+
+##################################
+# TEST / REPORTS
+##################################
+coverage/
+reports/
+
+##################################
+# GIT
+##################################
+.git/
