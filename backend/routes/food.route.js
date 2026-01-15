@@ -1,6 +1,4 @@
 import express from 'express'
-import multer from 'multer'
-
 
 import { addFood } from '../controller/food.controller.js'
 import { upload } from '../middlewares/multer.middleware.js';

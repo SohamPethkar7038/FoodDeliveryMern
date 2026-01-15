@@ -15,12 +15,15 @@ const foodSchema= new mongoose.Schema({
     },
     image:{
         type:String,
-        require:true,
+       
     },
     category:{
         type:String,
         require:true
     }
+},
+{
+    timestamps:true,
 })
 
 const foodModel=mongoose.models.food || mongoose.model("food",foodSchema);
