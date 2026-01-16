@@ -1,13 +1,12 @@
-import React, { useContext, useState } from 'react'
-import { assets } from '../../assets/assets'
-import { Link } from 'react-router-dom'
-import './Navbar.css'
-import { StoreContext } from '../../context/StoreContext'
+import React, { useContext, useState } from 'react';
+import { assets } from '../../assets/assets';
+import { Link } from 'react-router-dom';
+import './Navbar.css';
+import { StoreContext } from '../../context/StoreContext';
 
 const Navbar = ({ setShowLogin }) => {
-
   const [menu, setMenu] = useState("menu");
-  const { getTotalCartItems } = useContext(StoreContext)
+  const { getTotalCartItems } = useContext(StoreContext);
 
   return (
     <div className='navbar'>
@@ -64,7 +63,7 @@ const Navbar = ({ setShowLogin }) => {
         <button onClick={() => setShowLogin(true)}>sign in</button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
