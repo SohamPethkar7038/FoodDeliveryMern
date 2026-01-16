@@ -1,3 +1,4 @@
+import { log } from "console";
 import foodModel from "../models/food.model.js";
 import fs from 'fs'    // node js file system
 
@@ -6,13 +7,11 @@ import fs from 'fs'    // node js file system
 
 const addFood=async(req,res)=>{
 
-    
-
     const { name, description, price, category } = req.body;
 
     const image_filename = req.file ? req.file.filename : null;
 
-   const food = new foodModel({
+    const food = new foodModel({
     name,
     description,
     price,
@@ -30,10 +29,30 @@ const addFood=async(req,res)=>{
             message:"error in saving food product"
         })
     }
+}
 
+
+// all food list from the database
+
+const listFood=async (req,res)=>{
+    try {
+        const foods=await foodModel.find({});
+        res.json({
+            success:true,
+            message:"food list is ",
+            data:foods,
+        })
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success:false,
+            message:"error "
+        })
+        
+    }
 }
 
 
 
 
-export {addFood};
+export {addFood,listFood};
