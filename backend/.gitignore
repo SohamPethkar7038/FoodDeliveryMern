@@ -100,3 +100,9 @@ reports/
 # GIT
 ##################################
 .git/
+
+
+# Multer temporary uploads
+uploads/*
+!uploads/.gitkeep
+
