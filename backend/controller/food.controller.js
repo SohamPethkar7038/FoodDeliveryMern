@@ -21,7 +21,8 @@ const addFood=async(req,res)=>{
     try{
         await food.save();
         res.json({success:true,message:"food product saved"});
-    }catch(error){
+    }
+    catch(error) {
         console.log(error);
         res.josn({
             success:false,
@@ -38,7 +39,7 @@ const listFood=async (req,res)=>{
         const foods=await foodModel.find({});
         res.json({
             success:true,
-            message:"food list is ",
+            message:"food list is displayed ",
             data:foods,
         })
     } catch (error) {
@@ -76,6 +77,5 @@ const removeFood=async (req,res)=>{
 } 
 
 
-
-
 export {addFood,listFood,removeFood};
+
