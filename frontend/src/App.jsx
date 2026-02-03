@@ -14,15 +14,29 @@ import { Route, Routes } from 'react-router-dom';
 function App() {
   const [showLogin, setShowLogin] = useState(false);
 
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("All"); // ✅ move category here
+
   return (
     <>
       {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
       <div className='app'>
-        <ScrollToHash />  {/* Global hash scrolling */}
-        <Navbar setShowLogin={setShowLogin} />
+        <ScrollToHash />  
+
+        <Navbar setShowLogin={setShowLogin} setSearch={setSearch} search={search} />
 
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route 
+            path='/' 
+            element={
+              <Home 
+                search={search} 
+                setSearch={setSearch} 
+                category={category} 
+                setCategory={setCategory} 
+              />
+            } 
+          />
           <Route path='/cart' element={<Cart />} />
           <Route path='/order' element={<PlaceOrder />} />
         </Routes>

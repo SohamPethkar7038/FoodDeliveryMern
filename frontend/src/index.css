@@ -11,6 +11,7 @@
 
 body{
   min-height: 100vh;
+  overflow-y: auto;
 }
 a{
   text-decoration: none;
@@ -18,8 +19,9 @@ a{
 }
 
 .app{
-  width: 85%;
+  width: 90%;
   margin: auto;
+
 }
 
 @keyframes fadeIn{

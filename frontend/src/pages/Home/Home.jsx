@@ -5,8 +5,13 @@ import ExploreMenu from '../../components/ExploreMenu/ExploreMenu';
 import FoodDisplay from '../../components/FoodDisplay/FoodDisplay';
 import AppDownload from '../../components/AppDownload/AppDownload';
 
-const Home = () => {
+const Home = ({search,setSearch}) => {
   const [category, setCategory] = useState("All");
+
+   const handleCategoryChange = (newCategory) => {
+    setCategory(prev => prev === newCategory ? "All" : newCategory);
+   
+  };
 
   return (
     <div>
@@ -15,10 +20,10 @@ const Home = () => {
       </div>
 
       <div id="explore-menu">
-        <ExploreMenu category={category} setCategory={setCategory} />
+        <ExploreMenu category={category} setCategory={handleCategoryChange} />
       </div>
 
-      <FoodDisplay category={category} />
+      <FoodDisplay category={category} search={search} />
 
       <div id="app-download">
         <AppDownload />
