@@ -32,7 +32,7 @@ const registerUser = asyncHandler(async(req,res)=>{
     .json(new ApiResponse(
         201,
         createdEntry,
-        "User refistered successfully"));
+        "User registered successfully"));
 });
 
 
@@ -40,4 +40,63 @@ const registerUser = asyncHandler(async(req,res)=>{
 //  ************************* login user *********************************
 
 
-export {registerUser};
+const loginUser = asyncHandler(async(req,res)=>{
+    
+    const {email,password} = req.body;
+
+    if(!email || !password){
+        throw new ApiError(400,"Email & password are required");
+    }
+
+    const user = await userModel.findOne({email:email});
+
+    if(!user){
+        throw new ApiError(404,"Invalid User Email id");
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password);
+
+    if(!isPasswordValid){
+        throw new ApiError(404,"Invalid user password");
+    }
+
+
+    const generatingAccessAndRefreshToken = async(userId)=>{
+        try {
+            const user = await userModel.findById(userId);
+            const accessToken = user.generateAccessToken();
+            const refreshToken = user.generateRefreshToken();
+
+            user.refreshToken = refreshToken;
+
+            return {accessToken,refreshToken};
+
+        } catch (error) {
+            throw new ApiError(500,"something went wrong while generating tokens");
+        }
+    }
+
+    const {accessToken,refreshToken} = await generatingAccessAndRefreshToken(user._id);
+
+     const loggedInUser = await userModel.findById(user._id).select("-password -refreshToken -verifyOtp");
+
+     const options = {
+        httpOnly : true,
+        secure : process.env.NODE_ENV === "production",
+        sameSite : "lax",
+     }
+
+    return res
+    .status(200)
+    .cookie("accessToken",accessToken,options)
+    .cookie("refreshToken",refreshToken,options)
+    .json(
+        new ApiResponse(
+            200,
+            {User:loggedInUser},
+            "User logged in successfully"
+        )
+    )
+})
+
+export {registerUser,loginUser};

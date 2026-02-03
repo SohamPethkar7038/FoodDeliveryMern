@@ -20,32 +20,36 @@ const userSchema = new mongoose.Schema({
     verifyOtp:{
         type:String,
         default:"",
-        // required:true,
         select:false,
     },
     verifyOtpExpiredAt:{
         type:Date,
         default:0,
         // required:true,
-        selevct:false,
+        select:false,
     },
     isAccountVerified:{
         type:Boolean,
         default:false,
+
     },
     resetOtp:{
         type:String,
         default: "",
+        select:false
     },
     resetOtpExpiredAt:{
         type:Date,
         default:0,
+        select:false
     },
     passwordResetRequestAt:{
         type:Number,
+        select:false
     },
     refreshToken:{
         type:String,
+        select:false
     }
 },
 {
@@ -77,7 +81,7 @@ userSchema.methods.generateAccessToken = function(){
     )
 };
 
-// explain difference between simple function () and async function() in js
+
 
 userSchema.methods.generateRefreshToken=function(){
     return jwt.sign(
