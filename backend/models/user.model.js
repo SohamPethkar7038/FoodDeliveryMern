@@ -1,0 +1,96 @@
+import mongoose from "mongoose"
+import bcrypt from "bcrypt"
+import jwt, { verify } from "jsonwebtoken"
+
+const userSchema = new mongoose.Schema({
+    name:{
+        type:String,
+        required:true,
+    },
+    email:{
+        type:String,
+        required:true,
+        unique:true,
+    },
+    password:{
+        type:String,
+        required:true,
+    },
+    verifyOtp:{
+        type:String,
+        default:"",
+        required:true,
+        select:false,
+    },
+    verifyOtpExpiredAt:{
+        type:Date,
+        default:0,
+        required:true,
+        selevct:false,
+    },
+    isAccountVerified:{
+        type:Boolean,
+        default:false,
+    },
+    resetOtp:{
+        type:String,
+        default: "",
+    },
+    resetOtpExpiredAt:{
+        type:Date,
+        default:0,
+    },
+    passwordResetRequestAt:{
+        type:Number,
+    },
+    refreshToken:{
+        type:String,
+    }
+},
+{
+    timestamps:true,
+});
+
+userSchema.pre("save",async function(){
+    if(!this.isModified("password")) return;
+
+    this.password = await bcrypt.hash(this.password,10);
+});
+
+
+userSchema.methods.isPasswordCorrect = async function(password){
+    return await bcrypt.compare(password,this.password);
+}
+
+userSchema.methods.generateAccessToken = function(){
+    return jwt.sign(
+        {
+            _id:this._id,
+        },
+
+        process.env.ACCESS_TOKEN_SECRET,
+
+        {
+            expiresIn:process.env.ACCESS_TOKEN_EXPIRY,
+        }
+    )
+};
+
+// explain difference between simple function () and async function() in js
+
+userSchema.methods.generateRefreshToken=function(){
+    return jwt.sign(
+        {
+            _id:this._id,
+        },
+
+        process.env.REFRESH_TOKEN_SECRET,
+
+        {
+            expiresIn:process.env.REFRESH_TOKEN_EXPIRY
+        }
+    )
+}
+
+const userModel = mongoose.models.user || mongoose.model("User",userSchema);
+export default userModel;
