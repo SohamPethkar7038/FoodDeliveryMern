@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
-import bcrypt from "bcrypt"
-import jwt, { verify } from "jsonwebtoken"
+import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true,
         unique:true,
+        lowercase:true,
     },
     password:{
         type:String,
@@ -19,13 +20,13 @@ const userSchema = new mongoose.Schema({
     verifyOtp:{
         type:String,
         default:"",
-        required:true,
+        // required:true,
         select:false,
     },
     verifyOtpExpiredAt:{
         type:Date,
         default:0,
-        required:true,
+        // required:true,
         selevct:false,
     },
     isAccountVerified:{
