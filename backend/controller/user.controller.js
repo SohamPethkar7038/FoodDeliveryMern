@@ -129,5 +129,24 @@ const logoutUser = asyncHandler(async(req,res)=>{
     )
 })
 
-export {registerUser,loginUser,logoutUser};
+
+// *********************** check is authenticate ******************************
+
+const userIfAuthenticate = asyncHandler(async(req,res) => {
+    if(!req.user) {
+         return res.status(401).json(new ApiResponse(401, {}, "Unauthorized"));
+    }
+        return res
+        .status(401)
+        .json(
+            new ApiResponse(
+                401,
+                {},
+                "User is aunthenticate"
+            )
+        )
+    }
+);
+
+export {registerUser,loginUser,logoutUser,userIfAuthenticate};
 
