@@ -42,9 +42,7 @@ const LoginPopup = ({setShowLogin}) => {
 
             const {data} = await axios.post(`${backendUrl}/api/v1/auth${endPoint}`,payLoad);
 
-            if(!data?.success){
-                return toast.error(data?.message || "Something went wrong");
-            }
+           
 
             setIsLogin(true);
             await getUserData();
@@ -54,7 +52,10 @@ const LoginPopup = ({setShowLogin}) => {
             setShowLogin(false);
 
         } catch(error){
-            toast.error(error.response?.data?.message || error.message);
+            const message =
+                     error.response?.data?.message || "Invalid email or password";
+
+            toast.error(message);
         } finally {
             setLoading(false)
         }

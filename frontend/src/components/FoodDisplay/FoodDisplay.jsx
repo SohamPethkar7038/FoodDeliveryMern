@@ -12,11 +12,11 @@ const FoodDisplay = ({category,search}) => {
         <h2>Top dishes near your</h2>
         <div className='food-display-list'>
              {
-        food_list
-        .filter(item =>
-            (category === "All" || item.category === category) &&
-            item.name.toLowerCase().includes(search.toLowerCase())
-        )
+       food_list
+  .filter(item =>
+    item.name.toLowerCase().includes(search.toLowerCase()) && // always filter by search
+    (search === "" ? (category === "All" || item.category === category) : true) // only filter category if no search
+  )
         .map((item,index)=>{
             return <FoodItem 
                 key={item._id} 

@@ -20,7 +20,7 @@ const Home = ({search,setSearch}) => {
       </div>
 
       <div id="explore-menu">
-        <ExploreMenu category={category} setCategory={handleCategoryChange} />
+        <ExploreMenu category={category} setCategory={handleCategoryChange} setSearch={setSearch} />
       </div>
 
       <FoodDisplay category={category} search={search} />
