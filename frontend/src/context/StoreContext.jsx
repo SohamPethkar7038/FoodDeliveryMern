@@ -1,13 +1,70 @@
 import { createContext, useEffect, useState } from "react";
 import { food_list } from "../assets/assets";
+import axios from "axios"
+import { toast } from "react-toastify";
 
-
+axios.defaults.withCredentials = true;
 
 export const StoreContext=createContext(null);
 
 const StoreContextProvider=(props)=>{
 
+
+    // ****************************** Login section *************************************************
+
+
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    const [isLogin , setIsLogin] = useState(false);
+    
+    const [userData, setUserData] = useState(false);
+
+
+    const getUserData = async() =>{
+        try {
+            const {data} = await axios.get(backendUrl + '/api/v1/user/data');
+
+            console.log(data);
+            
+            data.success ? setUserData(data.data.user) : toast.error(data.message);
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }
+    }
+
+    const getAuthState = async() => {
+        try {
+            const {data} = await axios.get(`${backendUrl}/api/v1/auth/isAuth`);
+
+            if(data.success){
+                
+                setIsLogin(true);
+                setUserData(data.data.user);
+              
+            }
+            else{
+                setIsLogin(false);
+                setUserData(false);
+            }
+        } catch (error) {
+            setIsLogin(false);
+            setUserData(false);
+        }
+    }
+
+
+    useEffect(() =>{
+        getAuthState();
+    },[]);
+
+
+
+    // ************************************** cart section logic **********************************
+
     const [cartItems,setCartItems]=useState({});
+
+
+
 
     const addToCart=(itemId)=>{
         if(!cartItems[itemId]){
@@ -50,7 +107,13 @@ const StoreContextProvider=(props)=>{
         addToCart,
         removeFromCart,
         getTotalCartAmount,
-        getTotalCartItems
+        getTotalCartItems,
+        isLogin,
+        setIsLogin,
+        backendUrl,
+        getUserData,
+        setUserData,
+        userData
     }
     return(
         <StoreContext.Provider value={contextValue}>

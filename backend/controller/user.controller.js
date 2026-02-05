@@ -69,6 +69,8 @@ const loginUser = asyncHandler(async(req,res)=>{
 
             user.refreshToken = refreshToken;
 
+            await user.save({validateBeforesave : false});
+
             return {accessToken,refreshToken};
 
         } catch (error) {
@@ -134,14 +136,27 @@ const logoutUser = asyncHandler(async(req,res)=>{
 
 const userIfAuthenticate = asyncHandler(async(req,res) => {
     if(!req.user) {
-         return res.status(401).json(new ApiResponse(401, {}, "Unauthorized"));
-    }
-        return res
-        .status(401)
-        .json(
+         return res
+         .status(401)
+         .json(
             new ApiResponse(
                 401,
-                {},
+                 {},
+                "Unauthorized user"));
+    }
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: {
+                        id: req.user._id,
+                        name: req.user.name,
+                        email: req.user.email,
+                        isAccountVerified : req.user.isAccountVerified
+                    }
+                },
                 "User is aunthenticate"
             )
         )

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import { ToastContainer } from 'react-toastify';
 
 import Home from './pages/Home/Home';
 import Cart from './pages/Cart/Cart';
@@ -12,6 +13,8 @@ import ScrollToHash from './components/ScrollToHash';
 import { Route, Routes } from 'react-router-dom';
 
 function App() {
+
+
   const [showLogin, setShowLogin] = useState(false);
 
   const [search, setSearch] = useState("");
@@ -19,8 +22,11 @@ function App() {
 
   return (
     <>
+      <ToastContainer/>
+      
       {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
       <div className='app'>
+
         <ScrollToHash />  
 
         <Navbar setShowLogin={setShowLogin} setSearch={setSearch} search={search} />
