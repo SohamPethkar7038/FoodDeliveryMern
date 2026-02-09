@@ -4,6 +4,7 @@ import {ApiResponse} from "../utility/ApiResponse.js"
 import userModel from "../models/user.model.js";
 
 
+
 const registerUser = asyncHandler(async(req,res)=>{
 
     const {name,email,password} = req.body;
@@ -15,7 +16,10 @@ const registerUser = asyncHandler(async(req,res)=>{
     const existingUser = await userModel.findOne({email:email});
 
     if(existingUser){
-        throw new ApiError(409,"User with email id already exists");
+        return res.status(409).json({
+            success: false,
+            message: "User with email id already exists"
+        });
     }
 
 
@@ -25,8 +29,11 @@ const registerUser = asyncHandler(async(req,res)=>{
         password
     })
 
-    const createdEntry = await userModel.findById(user._id).select("-password -refreshToken");
+    const createdEntry = await userModel.findById(user._id)
+    .select("-password -refreshToken");
 
+
+    
     res
     .status(201)
     .json(new ApiResponse(
@@ -51,12 +58,12 @@ const loginUser = asyncHandler(async(req,res)=>{
     const user = await userModel.findOne({email:email});
 
     if(!user){
-        throw new ApiError(404,"Invalid User Email id");
+        throw new ApiError(401,"Invalid User Email id");
     }
 
     const isPasswordValid = await user.isPasswordCorrect(password);
 
-    if(!isPasswordValid){
+    if(!isPasswordValid && !user){
         throw new ApiError(404,"Invalid user password");
     }
 

@@ -26,9 +26,13 @@ const StoreContextProvider=(props)=>{
 
             console.log(data);
             
-            data.success ? setUserData(data.data.user) : toast.error(data.message);
+            data.success ? setUserData(data.data.user) : toast.error(data.message, {
+                autoClose:1000
+            });
         } catch (error) {
-            toast.error(error.response?.data?.message || error.message);
+            toast.error(error.response?.data?.message || error.message ,{
+                autoClose:1000
+            });
         }
     }
 

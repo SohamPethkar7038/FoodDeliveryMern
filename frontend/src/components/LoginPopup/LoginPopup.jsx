@@ -53,9 +53,16 @@ const LoginPopup = ({setShowLogin}) => {
 
         } catch(error){
             const message =
-                     error.response?.data?.message || "Invalid email or password";
+            error.response.data.message ||
+            error.response.data.error ||
+            error.response.data.errors?.[0]?.msg ||
+            "Request failed";
 
-            toast.error(message);
+            toast.error(message ,{
+                autoClose:1000, 
+                pauseOnHover:false,
+                closeOnClick:true
+            });
         } finally {
             setLoading(false)
         }
