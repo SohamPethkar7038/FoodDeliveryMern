@@ -8,9 +8,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Add = () => {
 
+  
   const backendURL=import.meta.env.VITE_BACKEND_URL;
 
   const [image,setImage]=useState(false);
+
+  const [loading, setLoading] = useState(false);
+
 
   const [data,setData]=useState({
     name:"",
@@ -31,31 +35,40 @@ const Add = () => {
 
     event.preventDefault();
 
-    const formData=new FormData();
-    formData.append("name",data.name);
-    formData.append("description",data.description);
-    formData.append("price",Number(data.price));
-    formData.append("category",data.category);
-    formData.append("image",image);
+    if (loading) return;
+    setLoading(true); 
 
-    const response=await axios.post(backendURL + '/api/v1/food/add',formData);
+    try {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("price", Number(data.price));
+    formData.append("category", data.category);
+    formData.append("image", image);
 
-    if(response.data.success){
+    const response = await axios.post(
+      backendURL + "/api/v1/food/add",
+      formData
+    );
 
-     
+    if (response.data.success) {
       setData({
-        name:"",
-        description:"",
-        price:"",
-        category:"salad"
-      })
-
+        name: "",
+        description: "",
+        price: "",
+        category: "Salad",
+      });
       setImage(false);
 
-       toast.success(response.data.message || "Food item added!");
-    }else{
-       toast.error(response.data.message || "Something went wrong")
+      toast.success("Food item added successfully!");
+    } else {
+      toast.error(response.data.message || "Failed to add food");
     }
+  } catch (error) {
+    toast.error("Upload failed. Try again.");
+  }
+
+  setLoading(false);
     }
   
 
@@ -100,7 +113,9 @@ const Add = () => {
             <input type="Number" name='price' onChange={onChangeHandler} value={data.price} placeholder='Rs40' />
           </div>
         </div>
-        <button type='submit' className='add-button'>Add</button>
+       <button type="submit" className="add-button" disabled={loading}>
+            {loading ? "Adding..." : "Add"}
+        </button>
       </form>
     </div>
   )

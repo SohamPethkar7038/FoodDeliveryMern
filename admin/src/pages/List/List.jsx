@@ -69,7 +69,14 @@ const removeFood=async(foodId)=>{
 
           return (
             <div key={index} className='list-table-format'>
-              <img src={`${backendUrl}/images/` + item.image} alt="" />
+              <img
+                  src={
+                    item.image.startsWith("http")
+                      ? item.image
+                      : `${backendUrl}/images/${item.image}`
+                  }
+                  alt={item.name}
+                />
               <p className='values'>{item.name}</p>
               <p className='values'>{item.category}</p>
               <p className='values'>${item.price}</p>

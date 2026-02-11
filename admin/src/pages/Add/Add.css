@@ -47,7 +47,12 @@ overflow: visible;
     background-color: black;
     color: white;
     cursor: pointer;
-    margin-bottom: 12px;
+   margin-bottom: 12px;
     overflow: visible;
     
+}
+
+.add-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
