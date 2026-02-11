@@ -1,5 +1,8 @@
+
+import 'dotenv/config'  // runs BEFORE all other imports
+
+
 import express from 'express'
-import dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from "cookie-parser"
 
@@ -8,8 +11,7 @@ import foodRouter from './routes/food.route.js'
 import router from './routes/user.routes.js'
 import userDetailRouter from './routes/fetchUserDetail.route.js'
 
-// load env variables
-dotenv.config()
+
 
 // app config
 const app=express();
@@ -20,7 +22,11 @@ const PORT=process.env.PORT || 4000
 app.use(express.json());
 app.use(cookieParser());
 
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:3000'
+];
 app.use(cors(
     {
         origin: function (origin,callback){
