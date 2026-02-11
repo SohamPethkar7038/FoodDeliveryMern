@@ -12,7 +12,15 @@ const FoodItem = ({id,name,price,description,image}) => {
     return (
     <div className='food-item'>
         <div className='food-item-img-container'>
-            <img className='food-item-image' src={image} alt="" />
+            <img
+                className='food-item-image'
+                  src={typeof image === "string" && image.startsWith("http")
+                        ? image          // Cloudinary image
+                        : image          // Local imported asset
+                  }
+                alt={name}
+            />
+
             {
                 !cartItems[id] ? <img className='add' onClick={()=>addToCart(id)} src={assets.add_icon_white} alt=''/> : 
                 <div className="food-item-counter">

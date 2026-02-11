@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { food_list } from "../assets/assets";
+import { food_list as staticFoodList } from "../assets/assets";
 import axios from "axios"
 import { toast } from "react-toastify";
 
@@ -57,9 +57,7 @@ const StoreContextProvider=(props)=>{
     }
 
 
-    useEffect(() =>{
-        getAuthState();
-    },[]);
+    // useffect for login downside
 
 
 
@@ -67,21 +65,23 @@ const StoreContextProvider=(props)=>{
 
     const [cartItems,setCartItems]=useState({});
 
+    const addToCart = (itemId) => {
+    const id = String(itemId);
+    setCartItems((prev) => ({
+        ...prev,
+        [id]: (prev[id] || 0) + 1,
+    }));
+};
 
 
+    const removeFromCart = (itemId) => {
+    const id = String(itemId);
+    setCartItems((prev) => ({
+        ...prev,
+        [id]: prev[id] - 1,
+    }));
+};
 
-    const addToCart=(itemId)=>{
-        if(!cartItems[itemId]){
-            setCartItems((prev)=>({...prev,[itemId]:1}))
-        }
-        else{
-            setCartItems((prev)=>({...prev,[itemId]:prev[itemId]+1}));
-        }
-    }
-
-    const removeFromCart=(itemId)=>{
-        setCartItems((prev)=>({...prev,[itemId]:prev[itemId]-1}));
-    }
 
     const getTotalCartAmount=()=>{
         let totalAmount=0;
@@ -89,13 +89,14 @@ const StoreContextProvider=(props)=>{
         for(const item in cartItems){
 
             if(cartItems[item]>0){
-                let itemInfo=food_list.find((product)=>product._id===item);
+                let itemInfo=mergedFoodList.find((product)=>product._id===item);
                 totalAmount+=itemInfo.price*cartItems[item];
             }
         }
         return totalAmount;
     }
 
+    
     const getTotalCartItems = () => {
     let totalItems = 0;
     for (const item in cartItems) {
@@ -104,8 +105,33 @@ const StoreContextProvider=(props)=>{
     return totalItems;
 }
 
+
+//    ******************** listing fooditems from backend to ui and also assets ********************
+
+    const [foodList, setFoodList] = useState([]);
+
+     const mergedFoodList = [...staticFoodList, ...foodList];
+
+    const fetchFoodListFromBackend = async() => {
+        
+        const response = await axios.get(backendUrl + "/api/v1/food/list");
+        setFoodList(response.data.data);
+    }
+
+
+    useEffect(() =>{
+        getAuthState();
+        
+        
+        async function loadData() {
+            await fetchFoodListFromBackend()
+        }
+        loadData();
+    },[]);
+
+
     const contextValue={
-        food_list,
+        food_list:  mergedFoodList,
         cartItems,
         setCartItems,
         addToCart,

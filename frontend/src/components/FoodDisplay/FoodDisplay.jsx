@@ -12,11 +12,19 @@ const FoodDisplay = ({category,search}) => {
         <h2>Top dishes near your</h2>
         <div className='food-display-list'>
              {
-       food_list
-  .filter(item =>
-    item.name.toLowerCase().includes(search.toLowerCase()) && // always filter by search
-    (search === "" ? (category === "All" || item.category === category) : true) // only filter category if no search
-  )
+  //      food_list
+  // .filter(item =>
+  //   item.name.toLowerCase().includes(search.toLowerCase()) && // always filter by search
+  //   (search === "" ? (category === "All" || item.category === category) : true) // only filter category if no search
+  // )
+    food_list
+  .filter(item => {
+    const nameMatch = item.name?.toLowerCase().includes(search.toLowerCase());
+    const categoryMatch =
+      search === "" ? (category === "All" || item.category === category) : true;
+
+    return nameMatch && categoryMatch;
+  })
         .map((item,index)=>{
             return <FoodItem 
                 key={item._id} 
