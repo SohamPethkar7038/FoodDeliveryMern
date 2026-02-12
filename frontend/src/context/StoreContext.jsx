@@ -65,44 +65,104 @@ const StoreContextProvider=(props)=>{
 
     const [cartItems,setCartItems]=useState({});
 
-    const addToCart = (itemId) => {
+    const addToCart = async (itemId) => {
     const id = String(itemId);
+
+    setCartItems((prev) => ({ 
+        ...prev,
+         [id]: (prev[id] || 0) + 1,
+    }));
+
+    if(!isLogin) return;
+
+   try {
+    const {data} = await axios.post(backendUrl + "/api/v1/cart/add",{itemId});
+
+    if(!data.success) throw new Error(data.message);
+
+    setCartItems(data.data);
+
+   } catch (error) {
     setCartItems((prev) => ({
         ...prev,
-        [id]: (prev[id] || 0) + 1,
+        [id] : Math.max((prev[id] || 1) -1, 0),
     }));
+
+    toast.error(
+        error.response?.data?.message || "Failed to add item",
+        {autoClose : 1000}
+    ); 
+   }
 };
 
 
-    const removeFromCart = (itemId) => {
+    const removeFromCart = async(itemId) => {
     const id = String(itemId);
     setCartItems((prev) => ({
         ...prev,
-        [id]: prev[id] - 1,
+        [id]: Math.max((prev[id] || 1) -1, 0),
     }));
+
+    if(!isLogin) return;
+
+    try {
+        
+        const {data} = await axios.post(backendUrl + "/api/v1/cart/remove",{itemId});
+
+        if(!data.success) throw new Error(data.message);
+
+        setCartItems(data.data);
+
+    } catch (error) {
+        toast.error(
+            error.response?.data?.message || "failed to update cart",
+            {autoClose : 1000 }
+        )
+    }
 };
+
+
+    const fetchCartFromBackend = async() => {
+        try {
+            
+            const {data} = await axios.get(backendUrl + "/api/v1/cart/");
+
+            if(data.success) {
+                setCartItems(data.data);
+            }
+
+        } catch (error) {
+            console.log("cart fetch failed")
+        }
+    } 
 
 
     const getTotalCartAmount=()=>{
         let totalAmount=0;
 
-        for(const item in cartItems){
+        const productMap = Object.fromEntries(
+        mergedFoodList.map(p => [String(p._id), p])
+    );
 
-            if(cartItems[item]>0){
-                let itemInfo=mergedFoodList.find((product)=>product._id===item);
-                totalAmount+=itemInfo.price*cartItems[item];
-            }
+    for (const item in cartItems) {
+        const product = productMap[item];
+
+        if (product && cartItems[item] > 0) {
+            totalAmount += product.price * cartItems[item];
         }
-        return totalAmount;
     }
+
+    return totalAmount;
+        
+}
 
     
     const getTotalCartItems = () => {
-    let totalItems = 0;
-    for (const item in cartItems) {
-        totalItems += cartItems[item];
-    }
-    return totalItems;
+        let totalItems = 0;
+        for (const item in cartItems) {
+            totalItems += cartItems[item];
+        }
+        return totalItems;
 }
 
 
@@ -120,14 +180,22 @@ const StoreContextProvider=(props)=>{
 
 
     useEffect(() =>{
-        getAuthState();
-        
-        
-        async function loadData() {
-            await fetchFoodListFromBackend()
-        }
-        loadData();
+       const initializeApp = async () => {
+        await getAuthState();
+        await fetchFoodListFromBackend();
+       };
+
+       initializeApp(); 
     },[]);
+
+    useEffect(() => {
+
+        if(isLogin) {
+            fetchCartFromBackend();
+        }else {
+            setCartItems({});
+        }
+    }, [isLogin]);
 
 
     const contextValue={

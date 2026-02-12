@@ -10,6 +10,7 @@ import connectDB from './config/Database.js'
 import foodRouter from './routes/food.route.js'
 import router from './routes/user.routes.js'
 import userDetailRouter from './routes/fetchUserDetail.route.js'
+import cartRouter from './routes/cart.route.js'
 
 
 
@@ -53,6 +54,10 @@ app.use('/images',express.static('uploads'))
 
 app.use("/api/v1/auth",router);
 app.use("/api/v1/user",userDetailRouter);
+
+// cart item endpoints
+
+app.use("/api/v1/cart",cartRouter)
 
 
 app.get('/',(req,res)=>{

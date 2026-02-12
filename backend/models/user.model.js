@@ -50,6 +50,11 @@ const userSchema = new mongoose.Schema({
     refreshToken:{
         type:String,
         select:false
+    },
+    cartData : {
+        type : Map,
+        of : Number,
+        default : {} 
     }
 },
 {
