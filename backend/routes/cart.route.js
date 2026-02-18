@@ -5,7 +5,7 @@ import { Router } from "express";
 
 const cartRouter = Router();
 
-cartRouter.route("/add").post(verifyJWT,addToCart);
+cartRouter.route("/add").post(verifyJWT, addToCart);
 cartRouter.route("/remove").post(verifyJWT,removeFromCart);
 cartRouter.route("/").get(verifyJWT,fetchCartData);
 

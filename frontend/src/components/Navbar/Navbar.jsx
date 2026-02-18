@@ -7,11 +7,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import { StoreContext } from '../../context/StoreContext';
 
+
+
+
 const Navbar = ({ setShowLogin, setSearch, search }) => {
 
   const navigate = useNavigate();
 
   const { getTotalCartItems,backendUrl,userData,setUserData,setIsLogin,isLogin } = useContext(StoreContext);
+
+
 
 
   // ********************************** fooditem, menu section ********************
@@ -52,7 +57,9 @@ const Navbar = ({ setShowLogin, setSearch, search }) => {
     }
   };
 
+
   // Close search when clicking outside or pressing ESC
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -72,6 +79,29 @@ const Navbar = ({ setShowLogin, setSearch, search }) => {
       window.removeEventListener("keydown", handleEsc);
     };
   }, []);
+
+  
+  // verification of email otp//
+
+  const sendVerificationOtp = async() => {
+    try {
+      axios.defaults.withCredentials = true;
+
+      const {data} = await axios.post(backendUrl + '/api/v1/auth/send-verification-otp');
+
+      if(data.success) {
+        navigate('/verify-email');
+        toast.success(data.message,{
+          autoClose : 1000,
+        });
+        }
+        else {
+          toast.error(error.message);
+        }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    }
+  } 
 
   return (
 
@@ -138,7 +168,7 @@ const Navbar = ({ setShowLogin, setSearch, search }) => {
           style={{ cursor: "pointer" }}
         />
 
-        {/* 🛒 Cart */}
+        {/*  Cart */}
         <div className='navbar-search-icon'>
           <Link to="/cart" className="cart-icon">
             <img src={assets.basket_icon} alt="" />
@@ -156,6 +186,15 @@ const Navbar = ({ setShowLogin, setSearch, search }) => {
             <li onClick={()=>navigate("/order")}> <p>Orders</p> </li>
             <hr />
             <li onClick={logout}><p>Logout</p></li>
+            <hr/>
+             {
+                !userData.isAccountVerified && 
+                    <li 
+                    onClick={sendVerificationOtp}
+                    >
+                      <p>Verify Email</p>
+                    </li>
+            }
           </ul>
         </div>
       }

@@ -11,6 +11,8 @@ import LoginPopup from './components/LoginPopup/LoginPopup';
 import ScrollToHash from './components/ScrollToHash';
 
 import { Route, Routes } from 'react-router-dom';
+import VerifyEmail from './components/VerifyEmail/VerifyEmail';
+
 
 function App() {
 
@@ -45,6 +47,11 @@ function App() {
           />
           <Route path='/cart' element={<Cart />} />
           <Route path='/order' element={<PlaceOrder />} />
+
+          {/* email verification routes */}
+
+          <Route path='/verify-email' element={<VerifyEmail/>} />
+        
         </Routes>
 
         <Footer />

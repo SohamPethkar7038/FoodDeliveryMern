@@ -165,6 +165,9 @@ const StoreContextProvider=(props)=>{
         return totalItems;
 }
 
+const loadCartData = async() => {
+    const response = await axios.post(backendUrl + "/api/cart/get") 
+}
 
 //    ******************** listing fooditems from backend to ui and also assets ********************
 

@@ -1,8 +1,10 @@
 import {asyncHandler} from "../utility/asyncHandler.js"
 import {ApiError} from "../utility/ApiError.js"
 import {ApiResponse} from "../utility/ApiResponse.js"
+import bcrypt from "bcryptjs"
 import userModel from "../models/user.model.js";
 import sendWelcomeEmail from "../services/emailServices/welcomeEmail.js";
+import sendVerifyEmailOtpAccount from "../services/emailServices/sendVerifyEmailOtp .js";
 
 
 const registerUser = asyncHandler(async(req,res)=>{
@@ -176,5 +178,107 @@ const userIfAuthenticate = asyncHandler(async(req,res) => {
     }
 );
 
-export {registerUser,loginUser,logoutUser,userIfAuthenticate};
+
+ // **************** sending email verification otp ********************
+
+ const sendVerifyEmailOTP = asyncHandler(async(req,res) => {
+
+     const userId = req.user?._id;
+
+     if(!userId) {
+        throw new ApiError(401, "Unauthorized user");
+     }
+
+     const user = await userModel.findById(userId)
+                  .select("+verifyOtp +verifyOtpExpiredAt");
+
+     if(!user) {
+        throw new ApiError(404, "User not found");
+     }
+
+     if(user.isAccountVerified) {
+        throw new ApiError(400,"Account already verified");
+     }
+
+     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+     
+     const hashedOtp = await bcrypt.hash(otp,10);
+
+     user.verifyOtp = hashedOtp;
+     user.verifyOtpExpiredAt = new Date(Date.now() + 10 * 60 * 1000);
+
+     await user.save({validateBeforesave : false});
+
+     try {
+        await sendVerifyEmailOtpAccount(user.email, otp);
+     } catch (error) {
+        console.error("Email failed:", error.message)
+     }
+    
+     return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                {},
+                "Verification otp send to email"
+            )
+        );
+ });
+
+
+ // ******** verifying email verification otp *******************
+
+
+ const verifyEmailOtp = asyncHandler(async(req,res) => {
+
+    const userId = req.user?._id;
+    const {otp} = req.body;
+
+    if(!otp) {
+        throw new ApiError(400,"otp is required");
+    }
+
+    const user = await userModel.findById(userId)
+                .select("+verifyOtp +verifyOtpExpiredAt");
+
+    if(!user) {
+        throw new ApiError(404,"User not found");
+    }
+
+    if(user.isAccountVerified){
+        throw new ApiError(400,"Account already verified");
+    }
+
+    if(!user.verifyOtp || !user.verifyOtpExpiredAt) {
+        throw new ApiError(400,"No otp request found");
+    }
+
+    if(user.verifyOtpExpiredAt < Date.now()) {
+        throw new ApiError(400, "OTP has expired");
+    }
+
+    const isOtpValid = await bcrypt.compare(otp, user.verifyOtp);
+
+    if(!isOtpValid) {
+        throw new ApiError(400,"Invalid Otp");
+    }
+
+    user.isAccountVerified = true;
+    user.verifyOtp = undefined;
+    user.verifyOtpExpiredAt = undefined;
+
+    await user.save({validateBeforesave : false});
+
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
+            {},
+            "Email verified successfully"       
+        ));
+ });
+
+export {registerUser, loginUser, logoutUser, userIfAuthenticate, sendVerifyEmailOTP
+        ,verifyEmailOtp};
 
