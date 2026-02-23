@@ -2,12 +2,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 4%;
+    padding: 4px 4%;
 }
 
 
 .navbar .logo{
-    width: max(10%,80px);
+    /* width: max(10%,80px); */
+    width: 200px;
+    height: 70px;
 
 }
 
