@@ -1,10 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import {useNavigate } from "react-router-dom";
 import { StoreContext } from "../../context/StoreContext";
 import "./PlaceOrder.css";
 
 const PlaceOrder = () => {
-  const { getTotalCartAmount, cartItems, food_list, backendUrl } =
+  const { getTotalCartAmount, cartItems, food_list, backendUrl, isLogin } =
     useContext(StoreContext);
 
   const [data, setData] = useState({
@@ -60,6 +61,16 @@ const PlaceOrder = () => {
       alert(error.response?.data?.message || error.message);
     }
   };
+
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   if(!isLogin) {
+  //     navigate("/register");
+  //   }
+  // },[isLogin, navigate]);
+
+  // if(!isLogin) return null;
 
   return (
     <form className="place-order" onSubmit={placeOrder}>

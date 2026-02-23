@@ -106,7 +106,7 @@ const Navbar = ({ setShowLogin, setSearch, search }) => {
   return (
 
     <div className='navbar'>
-      <Link to='/'><img src={assets.logo} alt="" className="logo" /></Link>
+      <Link to='/'><img src={assets.logo1} alt="" className="logo" /></Link>
 
       <ul className={`navbar-menu ${showSearch ? "hide-menu" : ""}`}>
         <Link to='/' onClick={() => setMenu("home")} 
@@ -183,7 +183,7 @@ const Navbar = ({ setShowLogin, setSearch, search }) => {
         <div className='navbar-profile'>
           {userData.name[0].toUpperCase()}
           <ul className='nav-profile-dropdown'>
-            <li onClick={()=>navigate("/order")}> <p>Orders</p> </li>
+            <li onClick={()=>navigate("/myorders")}> <p>Orders</p> </li>
             <hr />
             <li onClick={logout}><p>Logout</p></li>
             <hr/>
@@ -204,4 +204,3 @@ const Navbar = ({ setShowLogin, setSearch, search }) => {
 };
 
 export default Navbar;
-

@@ -1,4 +1,5 @@
 import basket_icon from './basket_icon.png'
+import logo1 from './logo1.png'
 import logo from './logo.png'
 import header_img from './header_img.png'
 import search_icon from './search_icon.png'
@@ -62,6 +63,7 @@ import parcel_icon from './parcel_icon.png'
 
 export const assets = {
     logo,
+    logo1,
      header_img, // from public folder
     basket_icon,
     header_img,
@@ -84,6 +86,10 @@ export const assets = {
 }
 
 export const menu_list = [
+    {
+        menu_name: "All",
+        menu_image: menu_1 , 
+    },
     {
         menu_name: "Salad",
         menu_image: menu_1

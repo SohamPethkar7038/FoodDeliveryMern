@@ -1,11 +1,17 @@
+
+
+
 .header{
-    height: 34vw;
-    margin: 25px;
+    height: 35vw;
+    margin: 15px;
     background: url('/header_img.png') no-repeat;
-    background-size: contain;
+    background-size: cover;
+    margin-bottom: 40px;
     position: relative;
+    background-position: center 100%;
 
 }
+
 
 .header-contents{
     position: absolute;
@@ -27,7 +33,7 @@
 
 .header-contents p{
     color: white;
-    font-size: 1.2vw;
+    color: white;
 }
 
 .header-contents button{
@@ -35,7 +41,6 @@
     color: #747474;
     font-weight: 500;
     padding: 1vw 2.3vw;
-    background-color: white;
     font-size: max(1vw,13px);
     border-radius: 50px;
     cursor: pointer;
